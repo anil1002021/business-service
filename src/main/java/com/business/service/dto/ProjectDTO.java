@@ -1,11 +1,9 @@
 package com.business.service.dto;
 
-import java.time.Instant;
-
 import com.business.service.domain.Project;
 
 public class ProjectDTO {
-	
+
 	private String projectNo;
 	private String projName;
 	private String program;
@@ -13,13 +11,13 @@ public class ProjectDTO {
 	private String projectStatus;
 	private String commitmentStatus;
 	private double commitmentBalance;
-	private Instant commitmentExpiration;
+	private String commitmentExpiration;
 	private String cisProgramType;
-	private Instant projEffDate;
+	private String projEffDate;
 	private String custNo;
 	private String custContactId;
-	
-	
+
+
 	public String getProjName() {
 		return projName;
 	}
@@ -29,9 +27,9 @@ public class ProjectDTO {
 	}
 
 	public ProjectDTO() {
-		
+
 	}
-	
+
 	public ProjectDTO(Project project) {
 		this.projectNo = project.getProjectNo();
 		this.projName = project.getProjName();
@@ -45,7 +43,7 @@ public class ProjectDTO {
 		this.projEffDate = project.getProjEffDate();
 		this.custNo = project.getCustNo();
 		this.custContactId = project.getCustContactId();
-		
+
 	}
 	public String getProjectNo() {
 		return projectNo;
@@ -53,7 +51,7 @@ public class ProjectDTO {
 	public void setProjectNo(String projectNo) {
 		this.projectNo = projectNo;
 	}
-	
+
 	public String getProgram() {
 		return program;
 	}
@@ -94,11 +92,11 @@ public class ProjectDTO {
 		this.commitmentBalance = commitmentBalance;
 	}
 
-	public Instant getCommitmentExpiration() {
+	public String getCommitmentExpiration() {
 		return commitmentExpiration;
 	}
 
-	public void setCommitmentExpiration(Instant commitmentExpiration) {
+	public void setCommitmentExpiration(String commitmentExpiration) {
 		this.commitmentExpiration = commitmentExpiration;
 	}
 
@@ -108,10 +106,10 @@ public class ProjectDTO {
 	public void setCisProgramType(String cisProgramType) {
 		this.cisProgramType = cisProgramType;
 	}
-	public Instant getProjEffDate() {
+	public String getProjEffDate() {
 		return projEffDate;
 	}
-	public void setProjEffDate(Instant projEffDate) {
+	public void setProjEffDate(String projEffDate) {
 		this.projEffDate = projEffDate;
 	}
 	public String getCustNo() {

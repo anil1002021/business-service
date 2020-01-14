@@ -1,22 +1,14 @@
 package com.business.service.web.rest.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import com.business.service.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.business.service.domain.ApplicationReviewDetails;
-import com.business.service.domain.EmailNotificationsAndContacts;
-import com.business.service.domain.Project;
-import com.business.service.domain.ProjectDetails;
-import com.business.service.domain.ProjectLog;
-import com.business.service.domain.SearchControl;
 import com.business.service.service.ProjectService;
 
 /**
@@ -24,18 +16,19 @@ import com.business.service.service.ProjectService;
  */
 @RestController
 @RequestMapping("/projects")
+@CrossOrigin(origins = "*")
 public class ProjectsRestController {
 
 	// Logger instance
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsRestController.class);
-	
+
 	@Autowired
 	private ProjectService projectService;
 
 	/*
 	@RequestMapping(value = "/getProjects", method = RequestMethod.GET)
 	public List<Project> getProjects(@RequestParam(value = "request") String request,	@RequestParam(value = "version", required = false, defaultValue = "1") int version) {
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start getSomething");
 			logger.debug("data: '" + request + "'");
@@ -66,10 +59,10 @@ public class ProjectsRestController {
 		}
 		return response;
 	}*/
-	
+
 	@RequestMapping(value = "/getProjects", method = RequestMethod.GET)
 	public List<Project> getProjects() {
-		
+
 		List<Project> response = null;
 
 		response = projectService.getProjects();
@@ -80,10 +73,10 @@ public class ProjectsRestController {
 		}
 		return response;
 	}
-	
+
 	@RequestMapping(value = "/getSearchControls", method = RequestMethod.GET)
 	public SearchControl getSearchControls() {
-		
+
 		SearchControl response;
 
 		response = projectService.getSearchControl();
@@ -94,10 +87,10 @@ public class ProjectsRestController {
 		}
 		return response;
 	}
-	
+
 	@RequestMapping(value = "/getProjectInfoBeneficiaries", method = RequestMethod.GET)
 	public ProjectDetails getProjectInfoBeneficiaries(@RequestParam String projectNo) {
-		
+
 		ProjectDetails response;
 
 		response = projectService.getProjectInfoBeneficiaries(projectNo);
@@ -108,10 +101,10 @@ public class ProjectsRestController {
 		}
 		return response;
 	}
-	
+
 	@RequestMapping(value = "/getApplicationReviewDetails", method = RequestMethod.GET)
 	public ApplicationReviewDetails getApplicationReviewDetails(@RequestParam String projectNo) {
-		
+
 		ApplicationReviewDetails response;
 
 		response = projectService.getApplicationReviewDetails(projectNo);
@@ -122,10 +115,10 @@ public class ProjectsRestController {
 		}
 		return response;
 	}
-	
+
 	@RequestMapping(value = "/getEmailNotificationsAndContacts", method = RequestMethod.GET)
 	public EmailNotificationsAndContacts getEmailNotificationsAndContacts(@RequestParam String projectNo) {
-		
+
 		EmailNotificationsAndContacts response;
 
 		response = projectService.getEmailNotificationsAndContacts(projectNo);
@@ -136,10 +129,10 @@ public class ProjectsRestController {
 		}
 		return response;
 	}
-	
+
 	@RequestMapping(value = "/getProjectLog", method = RequestMethod.GET)
 	public List<ProjectLog> getProjectLog(@RequestParam String projectNo) {
-		
+
 		List<ProjectLog> response;
 
 		response = projectService.getProjectLog(projectNo);
@@ -150,15 +143,41 @@ public class ProjectsRestController {
 		}
 		return response;
 	}
-	
+
+
+    @PostMapping(value = "/addProjectLog")
+    public String postProjectLog(@RequestParam(required = false) String projectNo,
+                                           @RequestParam(required = false) String projectDate,
+                                           @RequestParam(required = false) String projectUser,
+                                           @RequestParam(required = false) String entryDetails
+                                           ){
+
+        String response = null;
+
+        try{
+            LocalDate localDate = LocalDate.parse(projectDate);
+            ProjectLogpojo projectLogpojo = projectService.postProjectLog(projectNo, localDate, projectUser, entryDetails);
+            response = projectLogpojo.toString();
+            if (logger.isDebugEnabled()) {
+                logger.debug("result: '" + response + "'");
+                logger.debug("End getSomething");
+            }
+
+        }catch (Exception e){
+            response =  "Date formate should be YYYY-MM-DD";
+        }
+
+        return response;
+    }
+
 	@RequestMapping(value = "/searchProject", method = RequestMethod.GET)
-	public List<Project> searchProject(@RequestParam String projectNo, 
-			@RequestParam String projectName, 
-			@RequestParam String program, 
-			@RequestParam String projectStatus, 
-			@RequestParam String commitmentStatus, 
-			@RequestParam String member) {
-		
+	public List<Project> searchProject(@RequestParam(required = false) String projectNo,
+			@RequestParam(required = false) String projectName,
+			@RequestParam(required = false) String program,
+			@RequestParam(required = false) String projectStatus,
+			@RequestParam(required = false) String commitmentStatus,
+			@RequestParam(required = false) String member) {
+
 		List<Project> response;
 
 		response = projectService.searchProject(projectNo, projectName, program, projectStatus, commitmentStatus, member);
@@ -173,7 +192,7 @@ public class ProjectsRestController {
 
 	@RequestMapping(value = "/<add method name here>", method = RequestMethod.POST)
 	public String postSomething(@RequestParam(value = "request") String request,@RequestParam(value = "version", required = false, defaultValue = "1") int version) {
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start postSomething");
 			logger.debug("data: '" + request + "'");
@@ -204,12 +223,12 @@ public class ProjectsRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/<add method name here>", method = RequestMethod.PUT)
-	public String putSomething(@RequestBody String request,@RequestParam(value = "version", required = false, defaultValue = "1") int version) {
-		
+	@RequestMapping(value = "/updateProjectInfoBeneficiaries", method = RequestMethod.PUT)
+	public String putSomething(@RequestBody ProjectDetails projectDetails, @RequestParam(value = "version", required = false, defaultValue = "1") int version) {
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start putSomething");
-			logger.debug("data: '" + request + "'");
+			logger.debug("data: '" + projectDetails.toString() + "'");
 		}
 
 		String response = null;
@@ -219,9 +238,7 @@ public class ProjectsRestController {
 			case 1:
 				if (logger.isDebugEnabled())
 					logger.debug("in version 1");
-				// TODO: add your business logic here
-				response = "Response from Spring RESTful Webservice : "+ request;
-
+				response = projectService.updateInfoBeneficiaries(projectDetails);
 				break;
 			default:
 				throw new Exception("Unsupported version: " + version);
@@ -239,7 +256,7 @@ public class ProjectsRestController {
 
 	@RequestMapping(value = "/<add method name here>", method = RequestMethod.DELETE)
 	public void deleteSomething(@RequestBody String request,@RequestParam(value = "version", required = false, defaultValue = "1") int version) {
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start putSomething");
 			logger.debug("data: '" + request + "'");
